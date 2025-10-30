@@ -2,44 +2,44 @@
 #include <stdlib.h>
 #include "../../inc/uthash.h"
 
-struct my_struct {
+typedef struct hash_type {
     int id;             /* key */
     int val;            /* value */
     UT_hash_handle hh;  /* makes this structure hashable */
-};
+} hash_type;
 
 /* Add an item */
-void add_item(struct my_struct **items, int id, int val) {
-    struct my_struct *s = malloc(sizeof(struct my_struct));
+void add_item(hash_type **items, int id, int val) {
+    hash_type *s = malloc(sizeof(hash_type));
     s->id = id;
     s->val = val;
     HASH_ADD_INT(*items, id, s);
 }
 
 /* Find an item */
-struct my_struct *find_item(struct my_struct *items, int id) {
-    struct my_struct *s;
+hash_type *find_item(hash_type *items, int id) {
+    hash_type *s;
     HASH_FIND_INT(items, &id, s);
     return s;
 }
 
 /* Delete an item */
-void delete_item(struct my_struct **items, struct my_struct *s) {
+void delete_item(hash_type **items, hash_type *s) {
     HASH_DEL(*items, s);
     free(s);
 }
 
 /* Print all */
-void print_items(struct my_struct *items) {
-    struct my_struct *s;
+void print_items(hash_type *items) {
+    hash_type *s;
     for (s = items; s != NULL; s = s->hh.next) {
         printf("id=%d, val=%d\n", s->id, s->val);
     }
 }
 
 /* Delete all */
-void delete_all(struct my_struct **items) {
-    struct my_struct *current, *tmp;
+void delete_all(hash_type **items) {
+    hash_type *current, *tmp;
     HASH_ITER(hh, *items, current, tmp) {
         HASH_DEL(*items, current);
         free(current);
@@ -47,8 +47,8 @@ void delete_all(struct my_struct **items) {
 }
 
 int main() {
-    struct my_struct *items1 = NULL;
-    struct my_struct *items2 = NULL;
+    hash_type *items1 = NULL;
+    hash_type *items2 = NULL;
 
     /* Fill first hash */
     for (int i = 1; i <= 5; i++) {
@@ -68,7 +68,7 @@ int main() {
 
     /* Lookup in items1 */
     int lookup_id = 3;
-    struct my_struct *found = find_item(items1, lookup_id);
+    hash_type *found = find_item(items1, lookup_id);
     if (found)
         printf("\nFound id=%d → val=%d in items1\n", found->id, found->val);
 
